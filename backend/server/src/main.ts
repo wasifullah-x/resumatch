@@ -17,11 +17,21 @@ async function bootstrap() {
     vercelUrl,
   ].filter(Boolean) as string[];
 
+  const isAllowedVercelOrigin = (origin: string) => {
+    try {
+      const { hostname, protocol } = new URL(origin);
+      return protocol === 'https:' && hostname.endsWith('.vercel.app');
+    } catch {
+      return false;
+    }
+  };
+
   app.enableCors({
     origin: (origin, callback) => {
       if (!origin) return callback(null, true);
       if (allowedOrigins.includes(origin)) return callback(null, true);
-      return callback(new Error(`CORS blocked for origin: ${origin}`), false);
+      if (isAllowedVercelOrigin(origin)) return callback(null, true);
+      return callback(null, false);
     },
     credentials: true,
   });
