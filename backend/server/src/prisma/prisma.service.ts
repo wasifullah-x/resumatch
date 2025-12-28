@@ -5,7 +5,11 @@ import { PrismaClient } from '@prisma/client';
 export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
 
   constructor() {
-    super(); // PrismaClient automatically reads DATABASE_URL from environment
+    if (!process.env.DATABASE_URL) {
+      throw new Error('DATABASE_URL is not set');
+    }
+
+    super();
   }
 
   async onModuleInit() {
