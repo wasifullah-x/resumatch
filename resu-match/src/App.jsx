@@ -29,6 +29,19 @@ import Settings from './pages/dashboard/Settings';
 import JobSearch from './pages/jobs/JobSearch';
 import JobDetails from './pages/jobs/JobDetails';
 import SavedJobs from './pages/jobs/SavedJobs';
+import JobCategories from './pages/jobs/JobCategories';
+
+// Career Advice Pages
+import CareerAdvice from './pages/advice/CareerAdvice';
+import AdviceArticle from './pages/advice/AdviceArticle';
+
+// Pricing Page
+import Pricing from './pages/Pricing';
+
+// Employer Pages
+import PostJob from './pages/employer/PostJob';
+import BrowseCandidates from './pages/employer/BrowseCandidates';
+import EmployerDashboard from './pages/employer/EmployerDashboard';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -54,6 +67,19 @@ function App() {
                 {/* Job Routes (Public) */}
                 <Route path="/jobs" element={<JobSearch />} />
                 <Route path="/jobs/:id" element={<JobDetails />} />
+                <Route path="/categories" element={<JobCategories />} />
+
+                {/* Career Advice Routes (Public) */}
+                <Route path="/advice" element={<CareerAdvice />} />
+                <Route path="/advice/:id" element={<AdviceArticle />} />
+
+                {/* Pricing (Public) */}
+                <Route path="/pricing" element={<Pricing />} />
+
+                {/* Employer Routes (Public for now) */}
+                <Route path="/employer/post-job" element={<PostJob />} />
+                <Route path="/employer/dashboard" element={<EmployerDashboard />} />
+                <Route path="/employer/candidates" element={<BrowseCandidates />} />
 
                 {/* Protected Routes - Auth Disabled */}
                 <Route path="/dashboard" element={<Dashboard />} />

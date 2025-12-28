@@ -57,6 +57,7 @@ const Register = () => {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [agreedToTerms, setAgreedToTerms] = useState(false);
     const [userType, setUserType] = useState('Job Seekers');
+    const [accountType, setAccountType] = useState('jobseeker'); // 'jobseeker' or 'employer'
 
     // Temporary inputs for array fields
     const [tempSkill, setTempSkill] = useState('');
@@ -229,6 +230,7 @@ const Register = () => {
             data.append('location', formData.location);
             data.append('linkedin', formData.linkedin);
             data.append('portfolio', formData.portfolio);
+            data.append('role', accountType); // Add role field
 
             // Professional
             data.append('jobTitle', formData.jobTitle);
@@ -307,6 +309,39 @@ const Register = () => {
     const renderStep1 = () => (
         <div className="space-y-4 animate-fadeIn">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">Basic Information</h2>
+
+            {/* Account Type Selection */}
+            <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-3">Account Type *</label>
+                <div className="grid grid-cols-2 gap-4">
+                    <button
+                        type="button"
+                        onClick={() => setAccountType('jobseeker')}
+                        className={`p-4 border-2 rounded-lg transition-all ${
+                            accountType === 'jobseeker'
+                                ? 'border-blue-600 bg-blue-50 text-blue-900'
+                                : 'border-gray-200 bg-white text-gray-600 hover:border-blue-300'
+                        }`}
+                    >
+                        <div className="text-2xl mb-2">👤</div>
+                        <div className="font-semibold">Job Seeker</div>
+                        <div className="text-xs mt-1">Looking for opportunities</div>
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => setAccountType('employer')}
+                        className={`p-4 border-2 rounded-lg transition-all ${
+                            accountType === 'employer'
+                                ? 'border-blue-600 bg-blue-50 text-blue-900'
+                                : 'border-gray-200 bg-white text-gray-600 hover:border-blue-300'
+                        }`}
+                    >
+                        <div className="text-2xl mb-2">🏢</div>
+                        <div className="font-semibold">Employer</div>
+                        <div className="text-xs mt-1">Hiring talented people</div>
+                    </button>
+                </div>
+            </div>
 
             <div className="grid grid-cols-2 gap-4">
                 <input

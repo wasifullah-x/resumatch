@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { SaveJobDto } from './dto/job.dto';
+import { SaveJobDto, CreateJobDto, UpdateJobDto } from './dto/job.dto';
 
 interface JobFilters {
   location?: string;
@@ -147,6 +147,18 @@ export class JobsService {
     };
   }
 
+  async getRawJobById(id: string) {
+    const job = await this.prisma.job.findUnique({
+      where: { id },
+    });
+    
+    if (!job) {
+      throw new NotFoundException(`Job with ID ${id} not found`);
+    }
+    
+    return job;
+  }
+
   async getSavedJobs(userId: number) {
     const savedJobs = await this.prisma.savedJob.findMany({
       where: { user_id: userId },
@@ -228,5 +240,168 @@ export class JobsService {
     });
 
     return !!savedJob;
+  }
+
+  async getUserById(userId: number) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return user;
+  }
+
+  async createJob(employerId: number, createJobDto: CreateJobDto) {
+    const job = await this.prisma.job.create({
+      data: {
+        title: createJobDto.title,
+        company: createJobDto.company,
+        location: createJobDto.location,
+        type: createJobDto.type,
+        experience: createJobDto.experience,
+        salary_min: createJobDto.salary_min || null,
+        salary_max: createJobDto.salary_max || null,
+        salary_currency: createJobDto.salary_currency || 'PKR',
+        description: createJobDto.description,
+        requirements: createJobDto.requirements,
+        application_steps: createJobDto.application_steps,
+        skills: createJobDto.skills,
+        benefits: createJobDto.benefits || [],
+        remote: createJobDto.remote || false,
+        industry: createJobDto.industry,
+        employer_id: employerId,
+        status: 'active',
+        posted_date: new Date(),
+        applicants: 0,
+        views: 0,
+        featured: false,
+      },
+    });
+
+    return {
+      message: 'Job posted successfully',
+      job: {
+        id: job.id,
+        title: job.title,
+        company: job.company,
+        location: job.location,
+        type: job.type,
+        experience: job.experience,
+        salary: {
+          min: job.salary_min,
+          max: job.salary_max,
+          currency: job.salary_currency,
+        },
+        description: job.description,
+        requirements: job.requirements as string[],
+        applicationSteps: job.application_steps as string[],
+        skills: job.skills as string[],
+        benefits: job.benefits as string[],
+        postedDate: job.posted_date.toISOString().split('T')[0],
+        applicants: job.applicants,
+        remote: job.remote,
+        industry: job.industry,
+      },
+    };
+  }
+
+  async updateJob(jobId: string, updateJobDto: UpdateJobDto) {
+    const updateData: any = {};
+    
+    if (updateJobDto.title) updateData.title = updateJobDto.title;
+    if (updateJobDto.company) updateData.company = updateJobDto.company;
+    if (updateJobDto.location) updateData.location = updateJobDto.location;
+    if (updateJobDto.type) updateData.type = updateJobDto.type;
+    if (updateJobDto.experience) updateData.experience = updateJobDto.experience;
+    if (updateJobDto.salary_min !== undefined) updateData.salary_min = updateJobDto.salary_min;
+    if (updateJobDto.salary_max !== undefined) updateData.salary_max = updateJobDto.salary_max;
+    if (updateJobDto.salary_currency) updateData.salary_currency = updateJobDto.salary_currency;
+    if (updateJobDto.description) updateData.description = updateJobDto.description;
+    if (updateJobDto.requirements) updateData.requirements = updateJobDto.requirements;
+    if (updateJobDto.application_steps) updateData.application_steps = updateJobDto.application_steps;
+    if (updateJobDto.skills) updateData.skills = updateJobDto.skills;
+    if (updateJobDto.benefits) updateData.benefits = updateJobDto.benefits;
+    if (updateJobDto.remote !== undefined) updateData.remote = updateJobDto.remote;
+    if (updateJobDto.industry) updateData.industry = updateJobDto.industry;
+    if (updateJobDto.status) updateData.status = updateJobDto.status;
+
+    const job = await this.prisma.job.update({
+      where: { id: jobId },
+      data: updateData,
+    });
+
+    return {
+      message: 'Job updated successfully',
+      job: {
+        id: job.id,
+        title: job.title,
+        company: job.company,
+        location: job.location,
+        type: job.type,
+        experience: job.experience,
+        salary: {
+          min: job.salary_min,
+          max: job.salary_max,
+          currency: job.salary_currency,
+        },
+        description: job.description,
+        requirements: job.requirements as string[],
+        applicationSteps: job.application_steps as string[],
+        skills: job.skills as string[],
+        benefits: job.benefits as string[],
+        postedDate: job.posted_date.toISOString().split('T')[0],
+        applicants: job.applicants,
+        remote: job.remote,
+        industry: job.industry,
+        status: job.status,
+      },
+    };
+  }
+
+  async deleteJob(jobId: string) {
+    await this.prisma.job.update({
+      where: { id: jobId },
+      data: { status: 'deleted' },
+    });
+
+    return { message: 'Job deleted successfully' };
+  }
+
+  async getEmployerJobs(employerId: number) {
+    const jobs = await this.prisma.job.findMany({
+      where: { 
+        employer_id: employerId,
+        status: { not: 'deleted' },
+      },
+      orderBy: { posted_date: 'desc' },
+    });
+
+    return jobs.map(job => ({
+      id: job.id,
+      title: job.title,
+      company: job.company,
+      location: job.location,
+      type: job.type,
+      experience: job.experience,
+      salary: {
+        min: job.salary_min,
+        max: job.salary_max,
+        currency: job.salary_currency,
+      },
+      description: job.description,
+      requirements: job.requirements as string[],
+      applicationSteps: job.application_steps as string[],
+      skills: job.skills as string[],
+      benefits: job.benefits as string[],
+      postedDate: job.posted_date.toISOString().split('T')[0],
+      applicants: job.applicants,
+      applications: 0, // TODO: Count actual applications
+      remote: job.remote,
+      industry: job.industry,
+      status: job.status,
+      views: job.views,
+      featured: job.featured,
+    }));
   }
 }

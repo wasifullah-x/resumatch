@@ -10,6 +10,8 @@ import {
   UseInterceptors,
   UploadedFile,
   BadRequestException,
+  ForbiddenException,
+  Query,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
@@ -121,5 +123,43 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   async deleteAccount(@Request() req) {
     return this.usersService.deleteAccount(req.user.userId);
+  }
+
+  // Get candidates list (for employers)
+  @Get('candidates')
+  @UseGuards(JwtAuthGuard)
+  async getCandidates(
+    @Request() req,
+    @Query('location') location?: string,
+    @Query('experience') experience?: string,
+    @Query('search') search?: string,
+  ) {
+    const user = await this.usersService.getProfile(req.user.userId);
+    if (user.role !== 'employer' && user.role !== 'admin') {
+      throw new ForbiddenException('Only employers can access candidates');
+    }
+    return this.usersService.getCandidates({ location, experience, search });
+  }
+
+  // Get employer dashboard stats
+  @Get('employer/stats')
+  @UseGuards(JwtAuthGuard)
+  async getEmployerStats(@Request() req) {
+    const user = await this.usersService.getProfile(req.user.userId);
+    if (user.role !== 'employer' && user.role !== 'admin') {
+      throw new ForbiddenException('Only employers can access this');
+    }
+    return this.usersService.getEmployerStats(req.user.userId);
+  }
+
+  // Get applications for employer's jobs
+  @Get('employer/applications')
+  @UseGuards(JwtAuthGuard)
+  async getEmployerApplications(@Request() req) {
+    const user = await this.usersService.getProfile(req.user.userId);
+    if (user.role !== 'employer' && user.role !== 'admin') {
+      throw new ForbiddenException('Only employers can access this');
+    }
+    return this.usersService.getEmployerApplications(req.user.userId);
   }
 }
