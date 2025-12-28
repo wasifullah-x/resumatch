@@ -1,0 +1,48 @@
+# Dependencies
+node_modules
+
+# Build output
+dist
+build
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# Documentation
+README.md
+CHANGELOG.md
+LICENSE
+
+# Test files
+*.test.ts
+*.spec.ts
+test/
+coverage/
+
+# CI/CD
+.github
+.gitlab-ci.yml
