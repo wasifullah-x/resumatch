@@ -1,0 +1,143 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String
+  phone     String?
+  location  String?
+  
+  // Profile Picture
+  profile_picture_url String?
+  
+  // Professional Info
+  job_title            String?
+  years_of_experience  Int?
+  experience_level     String?
+  current_company      String?
+  industry             String?
+  professional_summary String?
+  
+  // Social Links
+  linkedin_profile  String?
+  portfolio_website String?
+  
+  // Skills (stored as JSON)
+  skills Json?
+  
+  // Education (stored as JSON array)
+  education Json?
+  
+  // Job Preferences (stored as JSON)
+  job_preferences Json?
+  
+  // Resume
+  resume_url      String?
+  resume_filename String?
+  
+  // Role
+  role String @default("user") // user, admin
+  
+  // Timestamps
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  
+  // Relations
+  applications Application[]
+  saved_jobs   SavedJob[]
+  
+  @@map("users")
+}
+
+model SavedJob {
+  id         Int      @id @default(autoincrement())
+  user_id    Int
+  job_id     String   // External job ID from The Muse API
+  job_data   Json     // Store complete job data
+  created_at DateTime @default(now())
+  
+  // Relations
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  
+  @@unique([user_id, job_id])
+  @@map("saved_jobs")
+}
+
+model Application {
+  id              Int      @id @default(autoincrement())
+  user_id         Int
+  job_id          String   // External job ID or internal
+  job_title       String
+  company_name    String
+  job_location    String?
+  job_type        String?
+  job_data        Json?    // Store complete job data
+  
+  // Application details
+  status          String   @default("applied") // applied, interviewing, accepted, rejected
+  cover_letter    String?
+  applied_via     String?  // website, linkedin, etc
+  notes           String?
+  
+  // Timestamps
+  applied_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+  
+  // Relations
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  
+  @@map("applications")
+}
+
+model PasswordReset {
+  id         Int      @id @default(autoincrement())
+  email      String
+  token      String   @unique
+  expires_at DateTime
+  used       Boolean  @default(false)
+  created_at DateTime @default(now())
+  
+  @@map("password_resets")
+}
+
+model Job {
+  id                  String   @id @default(uuid())
+  title               String
+  company             String
+  location            String
+  type                String   // Full-time, Part-time, Contract, Internship, Remote
+  experience          String   // Entry-level, Mid-level, Senior
+  salary_min          Int?
+  salary_max          Int?
+  salary_currency     String   @default("PKR")
+  description         String   @db.Text
+  requirements        Json     // Array of strings
+  application_steps   Json     // Array of strings
+  skills              Json     // Array of strings
+  benefits            Json     // Array of strings
+  posted_date         DateTime @default(now())
+  applicants          Int      @default(0)
+  remote              Boolean  @default(false)
+  industry            String
+  status              String   @default("active") // active, closed
+  
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
+  
+  @@index([location])
+  @@index([type])
+  @@index([industry])
+  @@index([experience])
+  @@index([remote])
+  @@map("jobs")
+}
