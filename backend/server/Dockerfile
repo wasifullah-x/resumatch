@@ -29,4 +29,4 @@ EXPOSE 3000
 ENV NODE_ENV=production
 
 # Start the application in production mode
-CMD ["npm", "run", "start:prod"]
+CMD ["node", "dist/src/main.js"]
