@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import DashboardLayout from '../../components/layout/DashboardLayout';
-import api from '../../services/api';
+import api, { API_URL } from '../../services/api';
 import ResumeUpload from '../../components/dashboard/ResumeUpload';
 import {
     FiUser,
@@ -428,7 +428,7 @@ const Settings = () => {
                                             <div className="w-24 h-24 rounded-full overflow-hidden bg-gray-100 border-2 border-white shadow-md">
                                                 {user?.profile_picture_url ? (
                                                     <img
-                                                        src={`http://localhost:5000/${user.profile_picture_url.replace(/\\/g, '/')}`}
+                                                        src={`${API_URL}/${user.profile_picture_url.replace(/\\/g, '/')}`}
                                                         alt="Profile"
                                                         className="w-full h-full object-cover"
                                                     />

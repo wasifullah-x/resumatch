@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
-import api from '../../services/api';
+import api, { API_URL } from '../../services/api';
 import { Link } from 'react-router-dom';
 import DashboardLayout from '../../components/layout/DashboardLayout';
 import RecommendedJobs from '../../components/dashboard/RecommendedJobs';
@@ -140,7 +140,7 @@ const Dashboard = () => {
                             <div className="w-14 h-14 rounded-full bg-white/20 backdrop-blur-sm overflow-hidden border-3 border-white shadow-lg">
                                 {user?.profile_picture_url ? (
                                     <img
-                                        src={`http://localhost:5000/${user.profile_picture_url.replace(/\\/g, '/')}`}
+                                        src={`${API_URL}/${user.profile_picture_url.replace(/\\/g, '/')}`}
                                         alt="Profile"
                                         className="w-full h-full object-cover"
                                     />

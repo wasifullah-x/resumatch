@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
-import api from '../../services/api';
+import api, { API_URL } from '../../services/api';
 import { FiUploadCloud, FiFileText, FiCheckCircle } from 'react-icons/fi';
 
 const ResumeUpload = () => {
@@ -85,7 +85,7 @@ const ResumeUpload = () => {
                     </div>
                     {user?.resume_url ? (
                         <a
-                            href={`http://localhost:5000/${user.resume_url.replace(/\\/g, '/')}`}
+                            href={`${API_URL}/${user.resume_url.replace(/\\/g, '/')}`}
                             target="_blank"
                             rel="noreferrer"
                             className="text-blue-600 hover:underline text-sm truncate block"

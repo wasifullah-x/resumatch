@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import api from '../../services/api';
+import { API_URL } from '../../services/api';
 import { Link } from 'react-router-dom';
 
 import DashboardLayout from '../../components/layout/DashboardLayout';
@@ -162,7 +163,7 @@ const Profile = () => {
                                         <p className="font-semibold text-gray-900">Resume Uploaded</p>
                                         {typeof resume_url === 'string' && (
                                             <a
-                                                href={`http://localhost:5000/${resume_url.replace(/\\/g, '/')}`}
+                                                href={`${API_URL}/${resume_url.replace(/\\/g, '/')}`}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 className="text-sm text-blue-600 hover:text-blue-800 underline"
