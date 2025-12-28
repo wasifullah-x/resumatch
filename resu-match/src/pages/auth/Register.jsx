@@ -290,7 +290,11 @@ const Register = () => {
                             step === currentStep ? 'bg-blue-600 text-white' :
                                 'bg-gray-200 text-gray-500'
                             }`}>
-                            {step < currentStep ? '✓' : step}
+                            {step < currentStep ? (
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                </svg>
+                            ) : step}
                         </div>
                         <span className="text-xs mt-1 text-gray-600 font-medium hidden sm:block">
                             {step === 1 ? 'Basic' : step === 2 ? 'Professional' : step === 3 ? 'Skills' : step === 4 ? 'Preferences' : 'Resume'}
@@ -308,36 +312,40 @@ const Register = () => {
 
     const renderStep1 = () => (
         <div className="space-y-4 animate-fadeIn">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Basic Information</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Basic Information</h2>
 
             {/* Account Type Selection */}
             <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-3">Account Type *</label>
+                <label className="block text-sm font-medium text-gray-900 mb-3">Account Type *</label>
                 <div className="grid grid-cols-2 gap-4">
                     <button
                         type="button"
                         onClick={() => setAccountType('jobseeker')}
-                        className={`p-4 border-2 rounded-lg transition-all ${
+                        className={`p-4 border-2 rounded-lg transition-all flex flex-col items-center ${
                             accountType === 'jobseeker'
-                                ? 'border-blue-600 bg-blue-50 text-blue-900'
-                                : 'border-gray-200 bg-white text-gray-600 hover:border-blue-300'
+                                ? 'border-blue-600 bg-blue-50'
+                                : 'border-gray-200 bg-white hover:border-blue-300'
                         }`}
                     >
-                        <div className="text-2xl mb-2">👤</div>
-                        <div className="font-semibold">Job Seeker</div>
-                        <div className="text-xs mt-1">Looking for opportunities</div>
+                        <svg className="w-8 h-8 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                        <div className={`font-semibold ${accountType === 'jobseeker' ? 'text-blue-900' : 'text-gray-700'}`}>Job Seeker</div>
+                        <div className={`text-xs mt-1 ${accountType === 'jobseeker' ? 'text-blue-700' : 'text-gray-500'}`}>Looking for opportunities</div>
                     </button>
                     <button
                         type="button"
                         onClick={() => setAccountType('employer')}
-                        className={`p-4 border-2 rounded-lg transition-all ${
+                        className={`p-4 border-2 rounded-lg transition-all flex flex-col items-center ${
                             accountType === 'employer'
-                                ? 'border-blue-600 bg-blue-50 text-blue-900'
-                                : 'border-gray-200 bg-white text-gray-600 hover:border-blue-300'
+                                ? 'border-blue-600 bg-blue-50'
+                                : 'border-gray-200 bg-white hover:border-blue-300'
                         }`}
                     >
-                        <div className="text-2xl mb-2">🏢</div>
-                        <div className="font-semibold">Employer</div>
+                        <svg className="w-8 h-8 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                        </svg>
+                        <div className={`font-semibold ${accountType === 'employer' ? 'text-blue-900' : 'text-gray-700'}`}>Employer</div>
                         <div className="text-xs mt-1">Hiring talented people</div>
                     </button>
                 </div>

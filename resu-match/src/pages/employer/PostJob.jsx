@@ -120,24 +120,31 @@ const PostJob = () => {
 
         setLoading(true);
         try {
-            // Clean up arrays
+            // Clean up arrays and map field names correctly
             const cleanedData = {
-                ...formData,
-                requirements: formData.requirements.filter(r => r.trim()),
-                applicationSteps: formData.applicationSteps.filter(s => s.trim()),
-                skills: formData.skills.filter(s => s.trim()),
-                benefits: formData.benefits.filter(b => b.trim()),
+                title: formData.title,
+                company: formData.company,
+                location: formData.location,
+                type: formData.type,
+                experience: formData.experience,
                 salary_min: parseInt(formData.salaryMin) || null,
                 salary_max: parseInt(formData.salaryMax) || null,
-                salary_currency: formData.salaryCurrency
+                salary_currency: formData.salaryCurrency,
+                description: formData.description,
+                requirements: formData.requirements.filter(r => r.trim()),
+                application_steps: formData.applicationSteps.filter(s => s.trim()),
+                skills: formData.skills.filter(s => s.trim()),
+                benefits: formData.benefits.filter(b => b.trim()),
+                remote: formData.remote,
+                industry: formData.industry
             };
 
-            await api.post('/jobs', cleanedData);
+            const response = await api.post('/jobs', cleanedData);
             success('Job posted successfully!');
             setTimeout(() => navigate('/employer/dashboard'), 1500);
         } catch (err) {
             console.error('Error posting job:', err);
-            showError(err.response?.data?.message || 'Failed to post job');
+            showError(err.response?.data?.message || 'Failed to post job. Please try again.');
         } finally {
             setLoading(false);
         }
